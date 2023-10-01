@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Buy{% endblock %}
+
+{% block content %}
+<script>
+    var price = 0;
+   
+    function updatePriceDisplay(a) {
+        var priceDisplay = document.getElementById("price-display");
+        var price_after_Display = document.getElementById("price_after_display");
+        var price = parseFloat(priceDisplay.textContent.replace("מחיר: ₪", ""));
+        var discount= document.getElementById("discount").value;
+        var price_after=0
+        price=price+parseFloat(a) 
+        price_after=price-parseFloat(discount);
+        priceDisplay.textContent = "מחיר: ₪ " +price.toFixed(2);
+        price_after_Display.textContent = "מחיר אחרי הנחה : ₪ " +price_after.toFixed(2);
+
+    }
+
+   function addProduct() {
+    var productSelect = document.getElementById("product");
+    var selectedOption = productSelect.options[productSelect.selectedIndex];
+    var selectedProduct = selectedOption.value;
+    var customer_type=document.getElementById('customer_type');
+    var equipmentPrice=0
+    if(customer_type.value=='private')
+        equipmentPrice = selectedOption.getAttribute("data-price"); // Retrieve the equipment price
+    else 
+        equipmentPrice = selectedOption.getAttribute("data-price_for_drivers")
+    var quantityInput = document.getElementById("quantity");
+    var quantity = quantityInput.value;
+    var customerType = document.getElementById("customer_type");
+    equipmentPrice= equipmentPrice*quantity
+    updatePriceDisplay(equipmentPrice)
+    if (selectedProduct && quantity) {
+        var productList = document.getElementById("product-list");
+        var listItem = document.createElement("li");
+        var productText = document.createTextNode( selectedProduct+" ("+quantity+")" );
+        listItem.appendChild(productText);
+
+        var removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "x";
+        removeButton.style.backgroundColor = "red"
+        removeButton.addEventListener("click", function() {
+            listItem.remove();
+            updatePriceDisplay(-1*parseFloat(equipmentPrice))
+            // Update equipment quantity
+            var equipmentQuantityInput = document.getElementById("equipment-quantity-" + selectedProduct);
+            var currentQuantity = parseInt(equipmentQuantityInput.value);
+            equipmentQuantityInput.value = currentQuantity + parseInt(quantity);
+        });
+        listItem.appendChild(removeButton);
+
+        productList.appendChild(listItem);
+
+        var hiddenProductInput = document.createElement("input");
+        hiddenProductInput.type = "hidden";
+        hiddenProductInput.name = "products";
+        hiddenProductInput.value = selectedProduct;
+        listItem.appendChild(hiddenProductInput);
+
+        var hiddenQuantityInput = document.createElement("input");
+        hiddenQuantityInput.type = "hidden";
+        hiddenQuantityInput.name = "quantities";
+        hiddenQuantityInput.value = quantity;
+        listItem.appendChild(hiddenQuantityInput);
+
+        productSelect.selectedIndex = -1;
+        quantityInput.value = "";
+    }
+}
+
+</script>
+<style>
+    label {
+        display: block;
+        margin-bottom: 5px;
+        direction: rtl;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        width: 200px;
+        padding: 5px;
+        margin-bottom: 10px;
+        direction: rtl;
+    }
+    .form-container {
+            max-width: 600px;
+            width: 310px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-left: 40px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin-left: 400px;
+            direction: rtl;
+            
+        }
+
+    .form-container h1 {
+        text-align: center;
+        color: #333333;
+        margin-bottom: 20px;
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 10px;
+        color: #333333;
+        text-align: right;
+    }
+
+    .form-container input[id="name_fill"]{
+        direction: rtl; 
+        width: 94%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+        
+    }
+    .form-container input[id="lname"]{
+        direction: rtl; 
+        width: 94%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    
+    
+    .form-container input[type="date"],
+    .form-container input[type="email"],
+    .form-container input[type="number"],
+    .form-container select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+        
+    }
+    .form-container input[id="customer_id"]{ 
+        width: 94%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .form-container input[id="quantity"]{ 
+        width: 94%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .form-container input[type="submit"] {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin-top: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .form-container input[type="submit"]:hover {
+        background-color: #45A049;
+    }       
+    button {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    ul {
+        margin-top: 10px;
+        padding-left: 20px;
+    }
+    #prices {
+    border: 1px solid #ccc; /* Add a border */
+    padding: 10px; /* Add some padding */
+    height: 100px;
+    font-size: 18px; /* Increase the font size */
+    font-weight: bold; /* Make the text bold */
+    background-color: #f9f9f9; /* Set a background color */
+    color: #333; /* Set the text color */
+}
+
+</style>
+
+
+<!-- Add Buy page specific content -->
+
+    
+
+    <form method="post" class="form-container" action="{% url 'add_buy' %}">
+        {% csrf_token %}
+        <h1>בצע רכישה</h1>
+        <label for="name_fill">שם פרטי :</label>
+        <input list="customers_fname" id="name_fill" name="name_fill" oninput="handleInput()">
+        <datalist id="customers_fname">
+            {% for customer in customers_entries %}
+            <option value="{{ customer.fname }}" lname="{{ customer.lname }}" 
+            customer_id="{{ customer.customer_id }}"
+            customer_type="{{ customer.customer_type }}"
+            ></option>
+        {% endfor %}
+        </datalist>
+    
+        <label for="lname">שם משפחה :</label>
+        <input type="text" id="lname" name="lname" >
+        <br>
+        <label for="customer_id"> תעודת זהות:</label>
+        <input type="number" id="customer_id" name="customer_id" required>
+        <br>
+        <label for="customer_type"> סוג לקוח:</label>
+                <select id="customer_type" name="customer_type" required>
+                    <option value="private">פרטי</option>
+                    <option value="new">נהג חדש </option>
+                    <option value="return"> נהג חוזר</option>
+                </select>
+        <br>
+        <label for="sales_man">מוכר </label>
+        <select id="sales_man" name="sales_man" required >
+            <option value=""> בחר מוכר</option>
+            {% for worker in worker_entries %}
+                <option value="{{ worker.fname }}">{{ worker.fname }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="product">מוצרים:</label>
+        <select id="product" name="product" >
+            <option value="">בחר מוצר </option>
+            {% for equipment in equipment_entries %}
+            <option value="{{ equipment.product_type }}" data-price="{{ equipment.price_for_private }}"
+            data-price_for_drivers="{{ equipment.price_for_drivers }}">{{ equipment.product_type }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="quantity">כמות:</label>
+        <input type="number" id="quantity" name="quantity" >
+        <br>
+        <button type="button" onclick="addProduct()"> הוסף מוצר</button>
+        <br>
+        <ul id="product-list"></ul>
+        <br>
+        <label for="discount">הנחה:</label>
+        <input type="text" id="discount" name="discount" value="0" onchange="updatePriceDisplay(0)">
+        <br>
+        <label for="date">תאריך:</label>
+        <input type="date" id="date" name="date" value="{{ today }}" required>
+        <br>
+    
+        <script>
+            // Get today's date in the format "YYYY-MM-DD"
+            var today = new Date().toISOString().split("T")[0];
+            document.getElementById("date").value = today;
+    
+            //automatic filling
+        function handleInput() {
+            console.log("in");
+            var inputElement = document.getElementById("name_fill");
+            var value = inputElement.value;
+            var options = document.getElementById("customers_fname").options;
+            var lname=document.getElementById("lname");
+            var customer_id=document.getElementById("customer_id");
+            var customer_type=document.getElementById("customer_type");
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === value) {
+                    lname.value = options[i].getAttribute("lname");
+                    customer_id.value=options[i].getAttribute("customer_id");
+                    customer_type.value=options[i].getAttribute("customer_type");
+                    console.log(customer_type.value);
+                  
+                  
+                }
+            }
+           
+    
+            console.log("No matching option found.");
+        }
+    
+    
+        /*{% for customer in customers_entries %}
+            <option value="{{ customer.fname }}" data-lname="{{ customer.lname}}">
+            {% endfor %}   */
+        </script>
+        <input type="submit" value="בצע רכישה">
+    </form>
+    
+
+
+
+
+<div id="prices">
+    
+    <div id="price-display"> מחיר: ₪ 0.00</div>
+    <div id="price_after_display">  מחיר אחרי הנחה: ₪ 0.00</div>
+</div>
+
+
+{% endblock %}

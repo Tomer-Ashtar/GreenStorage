@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales History{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        direction: rtl;
+    }
+
+    th {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        direction: rtl;
+        text-align:center;
+    }
+
+    td{
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        text-align:center;
+    }
+        
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+        
+    }
+
+    h2 {
+        text-align: center;
+        padding: 10px;
+    }
+    
+    .filter-form {
+        margin-bottom: 10px;
+        direction: rtl;
+    }
+</style>
+
+
+
+<form class="filter-form">
+    <label for="month-filter">בחר חודש:</label>
+    <br>
+    <select id="month-filter" name="month-filter" onchange="filterSalesHistory()">
+        <option value="all">הכל</option>
+        <option value="Jan">ינואר</option>
+        <option value="Feb">פבואר</option>
+        <option value="Mar">מרץ</option>
+        <option value="Ap">אפריל</option>
+        <option value="May">מאי</option>
+        <option value="Jun">יוני</option>
+        <option value="Jul">יולי</option>
+        <option value="Aug">אוגוסט</option>
+        <option value="Sep">ספטמבר</option>
+        <option value="Oc">אוקטובר</option>
+        <option value="Nov">נובמבר</option>
+        <option value="Dec">דצמבר</option>
+    </select>
+    <br>
+    <label for="product-filter">בחר מוצר:</label>
+    <select id="product-filter" name="product-filter" onchange="filterSalesHistory()">
+        <option value="all">הכל</option>
+        {% for equipment in equipment_entries %}
+            <option value="{{ equipment.product_type }}">{{ equipment.product_type }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="sales-man-filter">בחר מוכר:</label>
+    <br>
+    <select id="sales-man-filter" name="sales-man-filter" onchange="filterSalesHistory()">
+        <option value="all">הכל</option>
+        {% for worker in workers_entries %}
+            <option value="{{ worker.fname }}">{{ worker.fname }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <label for="customer_type"> סוג לקוח:</label>
+    <br>
+    <select id="customer_type" name="customer_type" onchange="filterSalesHistory()">
+        <option value="all">הכל</option>
+        <option value="private">private</option>
+        <option value="new">new</option>
+        <option value="return">return</option>
+    </select>
+    <br>
+    <label for="name-filter">בחר לקוח:</label>
+    <br>
+    <select id="name-filterr" name="name-filter" onchange="filterSalesHistory()">
+        <option value="all">הכל</option>
+        {% for customer in customers_entries %}
+            <option value="{{ customer.fname }} {{ customer.lname }}">{{ customer.fname }} {{ customer.lname }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+
+    <div id="total-sum">רווח כולל:</div>
+    <div id="total-buy">קנייה כוללת:</div>
+    
+
+</form>
+
+<table id="sales-history-table">
+    <tr>
+        <th>תאריך</th>
+        <th> שם פרטי</th>
+        <th> שם משפחה</th>
+        <th> תעודת זהות</th>
+        <th> סוג לקוח</th>
+        <th> מוכר</th>
+        <th>מוצר</th>
+        <th>מחיר</th>
+        <th> תשלום סופי</th>
+        <th>רווח</th>
+        <!-- Add more table headers for other sales history fields -->
+    </tr>
+    {% for entry in sales_history reversed %}  {# Use 'reversed' filter here #}
+    <tr>
+        <td>{{ entry.date }}</td>
+        <td>{{ entry.fname }}</td>
+        <td>{{ entry.lname }}</td>
+        <td>{{ entry.customer_id }}</td>
+        <td>{{ entry.customer_type }}</td>
+        <td>{{ entry.sales_man }}</td>
+        <td>
+            {% for product, quantity in entry.product_table.items %}
+                {{ product }} ({{ quantity }}יח')<br>
+            {% endfor %}
+        </td>
+        <td>
+            {% for product, cost in entry.price.items %}
+                ₪{{ cost }}
+                 <br>
+            {% endfor %}
+        </td>
+        <td>₪{{ entry.final_prize }}</td>
+        <td style="color: green;">₪{{ entry.profit }}</td>
+        <!-- Add more table cells for other sales history fields -->
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+    function filterSalesHistory() {
+        var selectedMonth = document.getElementById("month-filter").value;
+        var selectedProduct = document.getElementById("product-filter").value;
+        var selectedSalesMan = document.getElementById("sales-man-filter").value;
+        var selectedtype = document.getElementById("customer_type").value;
+        var selectedFullName = document.getElementById("name-filterr").value; // Get the selected full name
+        var selectedFirstName = selectedFullName.split(' ')[0]; // Extract first name
+        var selectedLastName = selectedFullName.split(' ')[1]; // Extract last name
+        var table = document.getElementById("sales-history-table");
+        var rows = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < rows.length; i++) {
+            var dateCell = rows[i].getElementsByTagName("td")[0];
+            var productCell = rows[i].getElementsByTagName("td")[6];
+            var salesManCell = rows[i].getElementsByTagName("td")[5];
+            var typeCell = rows[i].getElementsByTagName("td")[4];
+            var date = dateCell.textContent || dateCell.innerText;
+            var product = productCell.textContent || productCell.innerText;
+            var salesMan = salesManCell.textContent || salesManCell.innerText;
+            var type = typeCell.textContent || typeCell.innerText;
+            var firstName = rows[i].getElementsByTagName("td")[1].textContent || rows[i].getElementsByTagName("td")[1].innerText; // Get first name
+            var lastName = rows[i].getElementsByTagName("td")[2].textContent || rows[i].getElementsByTagName("td")[2].innerText; // Get last name
+            if (
+                (selectedMonth === "all" || date.startsWith(selectedMonth)) &&
+                (selectedProduct === "all" || product.includes(selectedProduct)) &&
+                (selectedSalesMan === "all" || salesMan === selectedSalesMan) &&
+                (selectedtype === "all" || type === selectedtype) &&
+                (selectedFullName === "all" || (firstName === selectedFirstName && lastName === selectedLastName)) // Compare first name and last name
+            ) {
+                rows[i].style.display = ""; // show the row
+            } else {
+                rows[i].style.display = "none"; // hide the row
+            }
+        }
+        rows = table.getElementsByTagName("tr");
+        var totalSum = 0;
+        var totalBuy= 0;
+
+        for (var i = 1; i < rows.length; i++) {
+            // Check if the row is visible (display property is not "none")
+            if (rows[i].style.display !== "none") {
+                var finalPrizeCell = rows[i].getElementsByTagName("td")[9];
+                var buyRow=rows[i].getElementsByTagName("td")[8];
+                var buy=parseFloat(buyRow.textContent.replace(/[^\d.-]/g, ''));
+                var finalPrize = parseFloat(finalPrizeCell.textContent.replace(/[^\d.-]/g, ''));
+                totalSum += finalPrize;
+                totalBuy+=buy;
+            }
+        }
+
+        // Update the content of the "total-sum" div with the calculated sum
+        document.getElementById('total-sum').textContent = 'רווח כולל: ₪' + totalSum.toFixed(2);
+        document.getElementById('total-buy').textContent = 'קנייה כוללת: ₪' + totalBuy.toFixed(2);
+    }
+</script>
+
+{% endblock %}

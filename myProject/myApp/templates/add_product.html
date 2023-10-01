@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Buy{% endblock %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 600px;
+        width: 310px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-left: 40px;
+        background-color: #f2f2f2;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h1 {
+        color: #333333;
+        margin-bottom: 20px;
+    }
+
+    .form-container label {
+        display: block;
+        margin-bottom: 10px;
+        color: #333333;
+        text-align: right;
+    }
+
+    .form-container input[id="product_type"]{
+        direction: rtl; 
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    
+    .form-container input[id="cost"],
+    .form-container input[id="price_for_drivers"],
+    .form-container input[id="price_for_private"]{ 
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    
+    .form-container input[type="date"],
+    .form-container input[type="email"],
+    .form-container input[type="number"],
+    .form-container select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        font-size: 16px;
+        
+    }
+
+    .form-container input[type="submit"] {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin-top: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .form-container input[type="submit"]:hover {
+        background-color: #45A049;
+    }
+    
+</style>
+
+<head>
+    <title>Add Product</title>
+</head>
+<body>
+   
+    <div class="form-container" style="direction: rtl;">
+        <h1>הוסף מוצר </h1>
+        <form method="post" action="{% url 'add_product' %}">
+            {% csrf_token %}
+            <label for="product_type"> סוג מוצר:</label>
+            <input type="text" id="product_type" name="product_type" required>
+
+            <label for="origin_product">מוצר מקור:</label>
+            <select id="origin_product" name="origin_product">
+                <option value="0"> אין  </option>
+                {% for equipment in equipment_entries %}
+                    <option value="{{ equipment.product_type }}">{{ equipment.product_type }}</option>
+                {% endfor %}
+            </select>
+            
+            <label for="package" id="package-label" style="display: none;"> מספר מוצרים במארז:</label>
+            <input type="number" id="package" name="package" value="1" style="display: none;">
+           
+            <label for="price_for_private" id="lprice_for_private">מחיר לפרטי:</label>
+            <input type="text" id="price_for_private" name="price_for_private" required>
+            
+            <label for="price_for_drivers" id="lprice_for_drivers">מחיר למובילים :</label>
+            <input type="text" id="price_for_drivers" name="price_for_drivers" required>
+            
+            <label for="over_all_stock" id="lover_all_stock">כמות:</label>
+            <input type="number" id="over_all_stock" name="over_all_stock" required>
+         
+            <label for="cost" id="lcost">מחיר עלות:</label>
+            <input type="text" id="cost" name="cost" required>
+            
+            <label for="notice" id="lnotice">תתריע מ:</label>
+            <input type="number" id="notice" name="notice" required>
+           
+            
+            <input type="submit" value="הוסף מוצר">
+            
+        </form>
+        
+    
+    
+    
+    </div>
+    
+    <script>
+        var originProductDropdown = document.getElementById("origin_product");
+        var packageLabel = document.getElementById("package-label");
+        var packageInput = document.getElementById("package");
+
+        originProductDropdown.addEventListener("change", function() {
+            var selectedValue = originProductDropdown.value;
+            if (selectedValue !== "0") {
+                packageLabel.style.display = "block";
+                packageInput.style.display="block";
+                packageInput.value = "1"; // Set default value to 0
+
+                // Set other label values to 0
+                //document.getElementById("price_for_private").value = "0";
+                //document.getElementById("price_for_drivers").value = "0";
+                document.getElementById("over_all_stock").value = "0";
+                document.getElementById("cost").value = "0";
+                document.getElementById("notice").value = "0";
+                //price_for_private.style.display="none";
+                //lprice_for_private.style.display="none";
+               // price_for_drivers.style.display="none";
+                //lprice_for_drivers.style.display="none";
+                over_all_stock.style.display="none";
+                lover_all_stock.style.display="none";
+                cost.style.display="none";
+                lcost.style.display="none";
+                lnotice.style.display="none";
+                notice.style.display="none";
+            } else {
+                packageLabel.style.display = "none";
+                packageInput.style.display = "none";
+
+                // Reset other label values if needed
+                //document.getElementById("price_for_private").value = "";
+                //document.getElementById("price_for_drivers").value = "";
+                document.getElementById("over_all_stock").value = "";
+                document.getElementById("cost").value = "";
+                document.getElementById("notice").value = "";
+                price_for_private.style.display="block";
+                lprice_for_private.style.display="block";
+                price_for_drivers.style.display="block";
+                lprice_for_drivers.style.display="block";
+                over_all_stock.style.display="block";
+                lover_all_stock.style.display="block";
+                cost.style.display="block";
+                lcost.style.display="block";
+                lnotice.style.display="block";
+                notice.style.display="block";
+            }
+        });
+    </script>
+</body>
+
+{% endblock %}

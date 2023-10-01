@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        body {
+            background-color: #F2F2F2;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333333;
+            text-align: center;
+            padding: 20px;
+            background-color: #FFFFFF;
+            margin: 0;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            background-color: #4CAF50;
+            padding: 10px;
+            margin-bottom: 20px;
+            
+        }
+
+        .toolbar button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toolbar button:hover {
+            background-color: #45A049;
+            
+        }
+
+        .content {
+            background-color: #FFFFFF;
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .mission-box {
+            background-color: #E1E1E1;
+            padding: 20px;
+            margin-left: 20px;
+            width: 200px;
+            color: red;
+            font-weight: bold;
+            direction: rtl;
+        }
+    </style>
+</head>
+<body>
+    <h1>Green Storage</h1>
+
+    <div class="toolbar">
+        <button onclick="location.href='/add-customer/'">הוסף לקוח </button>
+        <button onclick="location.href='/print/customers/'">רשימת לקוחות</button>
+        <button onclick="location.href='/print/workers/'"> רשימת עובדים</button>
+        <button onclick="location.href='/print/history/'"> היסטוריית מכירות</button>
+        <button onclick="location.href='/add-buy/'"> בצע רכישה</button>
+        <button onclick="location.href='/add-product/'">הוסף מוצר </button>
+        <button onclick="location.href='/print-product/'"> רשימת מוצרים</button>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+        
+        <div class="mission-box">
+            <h2>חוסרים</h2>
+            <p>
+                {% for equipment in equipment_entries %}
+                    {% if equipment.current_stock < equipment.notice %}
+                    <span style="color: black">{{ equipment.product_type }}</span> (כמות: {{ equipment.current_stock }})<br><br>
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
+

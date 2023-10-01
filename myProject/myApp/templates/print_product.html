@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipment Table{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        direction: rtl;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: right;
+        border-bottom: 1px solid #ddd;
+       
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    h2 {
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+<h2> רשימת ציוד</h2>
+
+<table>
+    <tr>
+        <th>סוג מוצר</th>
+        <th> כמות כללית</th>
+        <th> מחיר לפרטי</th>
+        <th> מחיר למובילים</th>
+        <th>עלות </th>
+        <th>התראה</th>
+        <th>כמות נוכחית </th>
+    </tr>
+    {% for equipment in equipment_entries %}
+        {% if equipment.origin_product == '0' %}
+            <tr>
+                <td>{{ equipment.product_type }}</td>
+                <td>{{ equipment.over_all_stock }}</td>
+                <td>{{ equipment.price_for_private }}</td>
+                <td>{{ equipment.price_for_drivers }}</td>
+                <td>{{ equipment.cost }}</td>
+                <td>{{ equipment.notice }}</td>
+                <td>{{ equipment.current_stock }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+</table>
+{% endblock %}

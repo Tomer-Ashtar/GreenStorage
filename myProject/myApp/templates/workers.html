@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Workers List{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    h2 {
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+
+
+
+<table id="workers-table">
+    <tr>
+       
+        
+        <th> לקוחות חדשים</th>
+        <th> כסף שהרוויח</th>
+        <th> שם משפחה</th>
+        <th>שם פרטי </th>
+        <!-- Add more table headers for other worker fields -->
+    </tr>
+    {% for worker in workers %}
+    <tr>
+        <td class="new-customer">
+            {% for month, count in worker.new_customer.items %}
+                {{ month }}: {{ count }}<br>
+            {% empty %}
+                No data available
+            {% endfor %}
+        </td>
+        <td class="money-earned">
+            {% for month, amount in worker.sum_of_sales.items %}
+                {{ month }}: {{ amount }}<br>
+            {% empty %}
+                No data available
+            {% endfor %}
+        </td>
+        <td>{{ worker.lname }}</td>
+        <td>{{ worker.fname }}</td>
+        
+        <!-- Add more table cells for other worker fields -->
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

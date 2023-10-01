@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer List{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        direction: rtl;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    h2 {
+        text-align: center;
+        padding: 10px;
+    }
+</style>
+
+
+<table>
+    <tr>
+        <th>תאריך</th>
+        <th> תעודת זהות</th>
+        <th> שם פרטי</th>
+        <th> שם משפחה</th>
+        <th>אימייל</th>
+        <th>טלפון</th>
+        <th> סוג לקוח</th>
+        <th> סך קניות</th>
+        
+        <!-- Add more table headers for other customer fields -->
+    </tr>
+    {% for customer in customers %}
+    <tr>
+        <td>{{ customer.date }}</td>
+        <td>{{ customer.customer_id }}</td>
+        <td>{{ customer.fname }}</td>
+        <td>{{ customer.lname }}</td>
+        <td>{{ customer.mail }}</td>
+        <td>{{ customer.phone }}</td>
+        <td>{{ customer.customer_type }}</td>
+        <td>₪{{ customer.totalbuys }}</td>
+        <!-- Add more table cells for other customer fields -->
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

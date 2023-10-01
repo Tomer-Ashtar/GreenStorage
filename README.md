@@ -7,7 +7,7 @@ activated:
 
 save the repository in C:\Users\username  
 
-open terminal open the folder 
+open terminal get to the GreenStorage folder 
 
 press "e.bat"
 
